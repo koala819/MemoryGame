@@ -1,0 +1,71 @@
+@font-face
+{
+    font-family: 'MuseoModerno';
+    src: url('../font/MuseoModerno-SemiBold.ttf') format('truetype');
+}
+body { 
+    width:100%;
+    background-color: #a8d9e0;
+    color : #FFF;
+    font-size: 148px;
+    font-family: "MuseoModerno", cursive;
+
+ }
+
+/* table {
+    width: 100%;
+    border: 0;
+    text-align: center;
+} */
+
+#number-select{
+    color : #fff;
+    font-size: 24px;
+    font-family: "MuseoModerno", cursive;
+    background-color: #a8d9e0;
+}
+
+#bouton_envoi{
+    color : #fff;
+    font-size: 24px;
+    font-family: "MuseoModerno", cursive;
+    background-color: #a8d9e0;
+}
+
+#ligneVide {
+    height: 50px;
+}
+#score{
+    width: 20%;
+    color:cadetblue;
+    font-size :20px;
+    font-weight: bold;
+    display:block;
+    float: right;
+    border: dashed black;
+}
+#image {
+    display: none;
+}
+
+#cartes
+{
+    display: flex;
+    justify-content: center;
+
+}
+
+#cartes2
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    
+}
+#cartes3
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    
+}

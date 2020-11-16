@@ -1,0 +1,397 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<head>
+    <title>MonPremierJeux</title>
+</head>
+<style>
+    table {
+        width: 100%;
+        border: 0;
+        text-align: center;
+    }
+
+    #ligneVide {
+        height: 50px;
+    }
+    #score{
+        width: 20%;
+        color:cadetblue;
+        font-size :20px;
+        font-weight: bold;
+        display:block;
+        float: right;
+        border: dashed black;
+    }
+    
+</style>
+
+<body>
+
+    <label for="number-select" id="nbCartes">Combien de cartes voulez-vous ?</label>
+
+    <select name="number" id="number-select">
+        <option value="2">4</option>
+        <option value="3">6</option>
+        <option value="4">8</option>
+        <option value="5">10</option>
+        <option value="6">12</option>
+        <option value="7">14</option>
+    </select>
+
+    <input type="submit" value="Commencer" id='bouton_envoi'>
+
+    <p id="resultat"></p>
+    <p id="cartes"></p>
+    <p id="recto"></p>
+    <div id="score"></div>
+    <script>
+        /*On cache la div score*/
+        let score = document.getElementById("score");
+        score.style.display = "none";
+        let nbscore = 0;
+
+        let validation = document.getElementById('bouton_envoi');
+        validation.addEventListener('click',GetSelectedValue);
+        /*Nombre de cartes à afficher
+        *2 => à cause des doubles*/
+        let numberS = 0;
+        /*Mémoire pour connaître la carte cliquée*/
+        let MCard = 0;
+        /*Mémoire pour conserver les 2 id des cartes cliquées*/
+        let Mid = 0;
+        let mem = new Array;
+        
+        /*Tableau pour gérer les cartes
+        carte : carte aléatoire tirée par l'ordinateur
+        compte & compteCarte : taleau pour compter kes doubles de carte */
+        let carte = new Array;
+        let compte = new Array;
+        //Tableau compteCarte (n° de la carte, nb de paires)
+        function compteCarte(numeroCarte, paire, ) {
+            this.carte = numeroCarte;
+            this.max = paire;
+        }
+        
+        
+        //ECOUTEUR
+        function GetSelectedValue(){
+            numberS = document.getElementById('number-select').value;
+            console.log(numberS);
+            document.getElementById("number-select").style.display = "none";
+            document.getElementById("bouton_envoi").style.display = "none";
+            document.getElementById("nbCartes").style.display = "none"; 
+            compte =  new Array(numberS - 1);
+            for (let i = 1; i <= numberS; i++) {
+                compte[i] = new compteCarte(i, 0);
+            }
+            // console.log('A LA FIN');
+            // for (j = 1 ; j <= numberS; j++){
+            //     console.log(compte[j].carte + ' ' + compte[j].max); 
+            // }  
+            nbCartes();
+        }
+        
+
+
+        //CREATION DES CARTES EN DOUBLE
+        function nbCartes() {
+            let numberS = document.getElementById('number-select').value;
+            // console.log('AU DEBUT');
+            //     for (j = 1 ; j <= numberS; j++){
+            //          console.log(compte[j].carte + ' ' + compte[j].max);
+            //     }
+            for (i = 1; i <= numberS * 2; i++) {
+                carte[i] = Math.floor((Math.random() * numberS) + 1);
+                //console.log('carte' + i + " = " + carte[i])
+                dance:
+                    for (j = 1; j <= numberS; j++) {
+                        // console.log('for (j = 1 ; j <= numberS; j++)');
+                        // console.log("ENTREE \nligne " + j +" \n" + compte[j].carte + " " + compte[j].max);
+                        if (carte[i] == compte[j].carte) {
+                            compte[j].max = compte[j].max + 1;
+                        }
+                        if (carte[i] == compte[j].carte && compte[j].max > 2) {
+                            //console.log ('FULL MEMORY');
+                            for (k = 1; k <= numberS; k++) {
+                                // console.log('for (k=1 ; k<=numberS ; k++)');
+                                if (compte[k].max <= 1) {
+                                    carte[i] = k;
+                                    compte[k].max = compte[k].max + 1;
+                                    // console.log ('FULL MEMORY, \ncarte = ' + k + " mémoire = " + compte[k].max);
+                                    break dance;
+                                }
+
+                            }
+                        }
+
+                    }
+            }
+            //     console.log('A LA FIN');
+            //     for (j = 1 ; j <= numberS; j++){
+            // console.log(compte[j].carte + ' ' + compte[j].max);
+           
+           
+            // //CONTROLE DES CARTES TIREES 
+            // for (j = 1; j <= numberS * 2; j++) {
+            //     document.getElementById("resultat").innerHTML += "carte n°" + j + " :: " + carte[j] + "<br>";
+            // }
+            createTable();
+        };
+
+
+
+
+        /*AFFICHAGE DU DOS DES CARTES SOUS FORMAT D'UN TABLEAU
+        TODO :: AJOUTER CONDITION >6 BESOIN DE CREER UNE NOUVELLE LIGNE*/
+        function createTable() {
+            if (numberS <= 3) {
+                document.getElementById("cartes").innerHTML = "";
+                let newTable = "<table border='0' width='100%' id='cartes'><tr>";
+                for (j = 1; j <= numberS * 2; j++) {
+                    newTable += "<td align='center' id = " + j + '><img src=img/dos.jpg><br>carte n°' + j + ' :: ' + carte[j] + '</td>';
+                }
+                newTable += "</tr></table>";
+                document.getElementById("cartes").innerHTML = newTable;
+                listenCard();
+            } else {
+                console.log('I am not READY')
+                document.getElementById("cartes").innerHTML = "";
+                let newTable = "<table border='0' width='100%' id='cartes'>";
+                let i = 0 ;
+                let j = 1 ;
+                    //for (j = 1 ; j <= numberS * 2 ; j++) {
+                    newTable += "<tr>"
+                    do {
+                        newTable += "<td align='center' id = " + j + '><img src=img/dos.jpg><br>carte n°' + j + ' :: ' + carte[j] + '</td>';
+                        i++;
+                        j++;
+                    } while (i < 6 && j <= numberS * 2);
+                    newTable += "</tr>";
+                    newTable += "<tr>"
+                    i = 0 ;
+                    do {
+                        newTable += "<td align='center' id = " + j + '><img src=img/dos.jpg><br>carte n°' + j + ' :: ' + carte[j] + '</td>';
+                        i++;
+                        j++;
+                    } while (i < 6 && j <= numberS * 2);
+                    newTable += "</tr>";
+                    newTable += "<tr>"
+                    i = 0 ;
+                    do {
+                        newTable += "<td align='center' id = " + j + '><img src=img/dos.jpg><br>carte n°' + j + ' :: ' + carte[j] + '</td>';
+                        i++;
+                        j++;
+                    } while (i < 6 && j <= numberS * 2);
+                    newTable += "</tr>";
+                //}
+                newTable += "</table>";
+                document.getElementById("cartes").innerHTML = newTable;
+                //myDoubles();
+                listenCard();
+            }
+        }
+
+
+
+
+        
+
+
+        
+        
+        //ECOUTEURS POUR AFFICHER lE COTE DU DESSIN DE LA CARTE
+        function listenCard() {
+            let clicks = 0;
+            //let onglet = document.querySelectorAll('td');
+            //console.log(onglet);
+            for (j = 1; j <= numberS * 2 ; j++ ) {
+                document.getElementById(j).addEventListener('click',verifDouble)
+                
+            }
+            
+            function verifDouble() {
+                let elt = this;
+                let idElt = this.getAttribute('id');
+                    //console.log(idElt + " blabla :: " + carte[idElt]);
+                    switch (carte[idElt]){
+                    case 1 :
+                        document.getElementById(idElt).innerHTML = "<img src=img/01.jpg>";
+                        document.getElementById(idElt).removeEventListener('click',verifDouble);
+                        //console.log('id photo cliqué' + idElt);
+                        onClick(idElt);
+                        break;
+                    case 2 :
+                    onClick(idElt);
+                        document.getElementById(idElt).innerHTML = "<img src=img/02.jpg>";
+                        document.getElementById(idElt).removeEventListener('click',verifDouble);
+                        break;
+                    case 3 :
+                    onClick(idElt);
+                        document.getElementById(idElt).innerHTML = "<img src=img/03.jpg>";
+                        document.getElementById(idElt).removeEventListener('click',verifDouble);
+                        break;
+                    case 4 :
+                    onClick(idElt);
+                        document.getElementById(idElt).innerHTML = "<img src=img/04.jpg>";
+                        document.getElementById(idElt).removeEventListener('click',verifDouble);
+                        break;
+                    case 5 :
+                    onClick(idElt);
+                        document.getElementById(idElt).innerHTML = "<img src=img/05.jpg>";
+                        document.getElementById(idElt).removeEventListener('click',verifDouble);
+                        break;
+                    case 6 :
+                    onClick(idElt);
+                        document.getElementById(idElt).innerHTML = "<img src=img/06.jpg>";
+                        document.getElementById(idElt).removeEventListener('click',verifDouble);
+                        break;
+                    case 7 :
+                    onClick(idElt);
+                        document.getElementById(idElt).innerHTML = "<img src=img/07.jpg>";
+                        document.getElementById(idElt).removeEventListener('click',verifDouble);
+                        break;
+                    }
+                    
+            }
+            /*Fonction pour vérifier le nombre de click dépasse pas 2
+            si 2 fois la même carte ajoute 1 point
+            si 2 cartes différents => pause 2s et remet toutes les cartes de dos*/
+            function onClick (e) {
+                clicks++;
+                //console.log("verif onCLick :: "+e);
+                mem[Mid] = e;
+                
+                console.log("compteur de clicks :: " + clicks + " mem=" + mem[Mid]);
+                Mid++;
+                if (clicks == 2){
+                    console.log("NO MORE CLICKS mem1=" +mem[0]+" mem2="+mem[1])
+                    if (carte[mem[0]] == carte[mem[1]]) {
+                        console.log ("BRAVO UNE PAIRE");
+                        Mid=0;
+                        clicks=0;
+                        nbscore++;
+                        score.style.display = "block";
+                        document.getElementById('score').innerHTML = "SCORE :: " + nbscore;
+                        if (nbscore == numberS) {setTimeout(Final, 2000);}
+                    }else{
+                        console.log ("TRY AGAIN");
+                        Mid=0;
+                        clicks=0;
+                        for (j = 1; j <= numberS*2 ; j++) {
+                            document.getElementById(j).removeEventListener('click',verifDouble);
+                        }
+                        setTimeout(TurnOffCard, 2000);
+                    }
+                }
+               
+            }
+            //REMET TOUTES LES CARTES DE DOS
+            function TurnOffCard()
+            {
+                console.log ("pause de 2s");
+                createTable();
+            }
+            function Final() {
+                console.log("fin fin fin")
+                window.location.reload()
+            }
+
+            // function disappear() {
+            //     let div_section = document.querySelectorAll('td');
+            //     for(let element of div_section){
+            //         element.parentNode.style.display = "none";
+            //     }
+            // }
+            
+        }
+
+        
+
+
+
+
+       
+
+
+
+
+        //MISE EN PLACE DES DOUBLES 
+        function myDoubles(){
+            document.getElementById("recto").innerHTML = "";
+            let newTable = "<table border='0' width='100%'><tr>";
+            for (j = 1; j <= numberS * 2; j++) {
+                //document.getElementById("cartes").innerHTML += "carte n°" + j + " :: " + carte[j] + "&#9;";
+                //document.body.innerHTML += "<p id = p" + j + " >" + carte[j] + "</p>";
+                switch (carte[j]){
+                    case 1 :
+                        newTable += "<td align='center'>'<img src=img/01.jpg><br>carte n°" + j + " :: " + carte[j] + "</td>";
+                        break;
+                    case 2 :
+                        newTable += "<td align='center'>'<img src=img/02.jpg><br>carte n°" + j + " :: " + carte[j] + "</td>";
+                        break;
+                }
+                
+            }
+            newTable += "</tr></table>";
+            document.getElementById("recto").innerHTML = newTable;    
+
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        /*function createTable() {
+            // récupère une référence vers l'élément body
+            let body = document.getElementsByTagName("body")[0];
+            // création de l'élément <table>
+            table = document.createElement("table");
+            // création des cellules
+            for (let k = 1; k <= numberS*2; k++) {
+                for (let j = 0; j < numberS; j++) {
+                    // création d'un élément <tr>
+                    row = document.createElement("tr");
+                    for (let i = 0; i < 2; i++) {
+                        // création d'un élément <td>
+                        cell = document.createElement("td");
+                        cell.id = 'cellule' + k;
+                        // ajoute la cellule <td> à la ligne <tr>
+                        row.appendChild(cell);
+                        k++;
+                    }
+                    // ajoute la ligne <tr> à l'élément <table>
+                    table.appendChild(row);
+
+                    //LIGNE VIDE 50 px
+                    row = document.createElement("tr");
+                    cell = document.createElement("td");
+                    cell.id = 'ligneVide';
+                    row.appendChild(cell);
+                    table.appendChild(row);
+                }
+                // ajoute <table> à l'élément <body>
+                body.appendChild(table);
+            }
+            //MISE EN PLACE DES IMAGES CARTE
+            for (let k = 1; k <= numberS*2; k++) {
+                let temp = 'cellule' +(k);
+                //console.log(temp);
+                document.getElementById('cellule'+k).innerHTML = '<img src=img/dos.jpg> <br>carte = '+carte[k];}
+        };*/
+
+
+
+
+
+
+        
+    </script>
+
+</body>
+
+</html>

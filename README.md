@@ -8,5 +8,5 @@
 # MemoryGame
 First JavaScript project.
 This is a game where you have to find two identical cards.<br><br>
-Want to play ? [Try it](https://boring-mcclintock-9f6494.netlify.app/)<br><br>
+Want to play ? [Try it](https://memorygame819.netlify.app/)<br><br>
 <img  width="100%" height="500" src="01.jpg">
